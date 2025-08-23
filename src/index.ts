@@ -3,6 +3,7 @@ import express, { Request, Response } from "express";
 import { AppDataSource } from "./data-source";
 import { Note } from "./entity/Note";
 import * as dotenv from "dotenv";
+import { Like } from "typeorm";
 
 dotenv.config();
 
@@ -12,6 +13,44 @@ app.use(express.json());
 // healthcheck
 app.get("/health", (_req, res) => {
   res.json({ ok: true });
+});
+
+app.get("/api/notes", async (req: Request, res: Response) => {
+  try {
+    const page = Math.max(1, Number(req.query.page) || 1);
+    const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 20));
+    const skip = (page - 1) * limit;
+
+    const q = (req.query.q as string | undefined)?.trim();
+
+    const where = q
+      ? [
+          { title: Like(`%${q}%`) },
+          { content: Like(`%${q}%`) },
+        ]
+      : undefined;
+
+    const [data, total] = await AppDataSource.getRepository(Note).findAndCount({
+      where,
+      order: { id: "DESC" },
+      skip,
+      take: limit,
+    });
+
+    return res.json({
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+        hasNextPage: skip + data.length < total,
+      },
+      data,
+    });
+  } catch (err: any) {
+    console.error(err);
+    return res.status(500).json({ error: "Erro ao listar notas." });
+  }
 });
 
 app.put("/api/notes/:id", async (req: Request, res: Response) => {
@@ -75,7 +114,7 @@ app.delete("/api/notes/:id", async (req: Request, res: Response) => {
     }
 
     await repo.remove(note);
-    return res.status(204).send(); // sem conteúdo
+    return res.status(204).send();
   } catch (err: any) {
     console.error(err);
     return res.status(500).json({ error: "Erro ao deletar nota." });
