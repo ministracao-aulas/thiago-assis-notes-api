@@ -3,7 +3,8 @@
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-
+    "vercel:build": "npm run migration:run && npm build",
+    "vercel:via_script": "bash ./deploy-script.sh",
     "typeorm": "node -r ts-node/register ./node_modules/typeorm/cli.js -d src/data-source.ts",
 
     "migration:run": "npm run typeorm -- migration:run",

@@ -1,0 +1,18 @@
+### Note list
+GET http://127.0.0.1:3000/api/notes
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer MyAuthToken
+
+
+### My POST request description
+POST http://localhost:3000/api/notes/new
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer MyAuthToken
+
+{
+    "title": "Minha nova nota {{$randomInt 1000 9999}}",
+    "content": "Este é o conteúdo da nota. sdfjshdjd {{$randomInt 1000 9999}}",
+    "tags": ["exemplo", "offline"]
+}
