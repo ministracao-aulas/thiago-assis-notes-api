@@ -1,7 +1,8 @@
 {
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "build": "tsc",
+    "build": "bash ./deploy-script.sh",
+    "tsc": "tsc",
     "start": "node dist/index.js",
     "vercel:build": "npm run migration:run && npm build",
     "vercel:via_script": "bash ./deploy-script.sh",
