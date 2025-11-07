@@ -8,8 +8,8 @@ import { Note } from './entity/Note';
 dotenv.config();
 
 export const debugOn = () => {
-  return Boolean(process.env.APP_DEBUG ?? false);
-}
+    return Boolean(process.env.APP_DEBUG ?? false);
+};
 
 export const getDatabaseUrl = () => {
     // DATABASE_URL=postgres://postgres:postgres@localhost:5432/notesdb
